@@ -45,6 +45,11 @@ public class DataStore {
     public static void addSensor(Sensor sensor) {
         sensors.put(sensor.getId(), sensor);
         readings.put(sensor.getId(), new ArrayList<>());
+        // Link sensor to its parent room atomically with registration
+        Room room = rooms.get(sensor.getRoomId());
+        if (room != null) {
+            room.getSensorIds().add(sensor.getId());
+        }
     }
 
     public static boolean sensorExists(String id) { return sensors.containsKey(id); }

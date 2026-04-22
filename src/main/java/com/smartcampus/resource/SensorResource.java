@@ -1,7 +1,6 @@
 package com.smartcampus.resource;
 
 import com.smartcampus.exception.LinkedResourceNotFoundException;
-import com.smartcampus.model.Room;
 import com.smartcampus.model.Sensor;
 import com.smartcampus.store.DataStore;
 
@@ -50,9 +49,6 @@ public class SensorResource {
                     .entity(Map.of("error", "Sensor with this ID already exists")).build();
         }
         DataStore.addSensor(sensor);
-        // Link sensor ID to the room
-        Room room = DataStore.getRoom(sensor.getRoomId());
-        room.getSensorIds().add(sensor.getId());
 
         return Response.status(Response.Status.CREATED)
                 .entity(Map.of("message", "Sensor registered successfully", "id", sensor.getId()))
