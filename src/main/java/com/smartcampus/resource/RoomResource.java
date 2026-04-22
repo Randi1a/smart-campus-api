@@ -7,7 +7,10 @@ import com.smartcampus.store.DataStore;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Context;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
 
@@ -25,7 +28,7 @@ public class RoomResource {
 
     // POST /api/v1/rooms — create a room
     @POST
-    public Response createRoom(Room room) {
+    public Response createRoom(Room room, @Context UriInfo uriInfo) {
         if (room.getId() == null || room.getId().isBlank()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "Room ID is required")).build();
@@ -35,7 +38,8 @@ public class RoomResource {
                     .entity(Map.of("error", "Room with this ID already exists")).build();
         }
         DataStore.addRoom(room);
-        return Response.status(Response.Status.CREATED)
+        URI location = uriInfo.getAbsolutePathBuilder().path(room.getId()).build();
+        return Response.created(location)
                 .entity(Map.of("message", "Room created successfully", "id", room.getId()))
                 .build();
     }
