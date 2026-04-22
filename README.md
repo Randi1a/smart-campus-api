@@ -42,7 +42,7 @@ The API follows a **hierarchical resource model** that mirrors the physical stru
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/<your-username>/smart-campus-api.git
+git clone https://github.com/Randi1a/smart-campus-api.git
 cd smart-campus-api
 ```
 
