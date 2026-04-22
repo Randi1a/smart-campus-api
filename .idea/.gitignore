@@ -1,0 +1,12 @@
+# IntelliJ project files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Maven build output
+target/
+
+# OS files
+.DS_Store
+Thumbs.db
