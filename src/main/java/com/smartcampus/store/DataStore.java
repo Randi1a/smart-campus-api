@@ -25,11 +25,16 @@ public class DataStore {
     public static boolean roomExists(String id) { return rooms.containsKey(id); }
 
     public static boolean deleteRoom(String id) {
-        if (rooms.containsKey(id)) {
-            rooms.remove(id);
-            return true;
+        Room room = rooms.remove(id);
+        if (room == null) {
+            return false;
         }
-        return false;
+        // Cascade: remove all sensors and their readings that belonged to this room
+        for (String sensorId : room.getSensorIds()) {
+            sensors.remove(sensorId);
+            readings.remove(sensorId);
+        }
+        return true;
     }
 
     // ── Sensors ────────────────────────────────────────────
