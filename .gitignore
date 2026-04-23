@@ -10,3 +10,9 @@ target/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Postman
+.postman/
+postman/
+*.postman_collection.json
+*.postman_environment.json
