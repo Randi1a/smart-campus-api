@@ -5,9 +5,12 @@ import com.smartcampus.model.Sensor;
 import com.smartcampus.store.DataStore;
 
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +36,7 @@ public class SensorResource {
 
     // POST /api/v1/sensors — register a new sensor
     @POST
-    public Response createSensor(Sensor sensor) {
+    public Response createSensor(Sensor sensor, @Context UriInfo uriInfo) {
         if (sensor.getId() == null || sensor.getId().isBlank()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "Sensor ID is required")).build();
@@ -49,10 +52,22 @@ public class SensorResource {
                     .entity(Map.of("error", "Sensor with this ID already exists")).build();
         }
         DataStore.addSensor(sensor);
-
-        return Response.status(Response.Status.CREATED)
+        URI location = uriInfo.getAbsolutePathBuilder().path(sensor.getId()).build();
+        return Response.created(location)
                 .entity(Map.of("message", "Sensor registered successfully", "id", sensor.getId()))
                 .build();
+    }
+
+    // GET /api/v1/sensors/{sensorId} — get a specific sensor
+    @GET
+    @Path("/{sensorId}")
+    public Response getSensor(@PathParam("sensorId") String sensorId) {
+        Sensor sensor = DataStore.getSensor(sensorId);
+        if (sensor == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "Sensor not found: " + sensorId)).build();
+        }
+        return Response.ok(sensor).build();
     }
 
     // Sub-resource locator: /api/v1/sensors/{sensorId}/readings
